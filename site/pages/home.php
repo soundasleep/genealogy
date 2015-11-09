@@ -1,6 +1,6 @@
 <?php
 
-page_header("Home", "page_index");
+page_header("List of People", "page_index");
 require_template("home");
 page_footer();
 

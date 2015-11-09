@@ -1,0 +1,27 @@
+.content {
+  h1, h2, h3, h4, h5, h6 {
+    clear: both;
+  }
+
+  dl {
+    dt, dd {
+      //border: 1px solid red;
+      margin: 0;
+      padding: 0;
+      line-height: 160%;
+    }
+
+    dt {
+      display: inline-block;
+      font-weight: bold;
+      width: 15%;
+      vertical-align: top;
+    }
+
+    dd {
+      display: inline-block;
+      width: 80%;
+      vertical-align: top;
+    }
+  }
+}

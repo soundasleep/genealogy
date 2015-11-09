@@ -4,3 +4,4 @@ site/css/*.css
 site/js/*.js
 site/images/sprites.png
 .sass-cache/
+site/tree.yml

@@ -6,7 +6,7 @@ RewriteCond %{HTTP_HOST} !localhost
 RewriteRule . - [E=REWRITEBASE:/]
 
 RewriteCond %{HTTP_HOST} localhost
-RewriteRule . - [E=REWRITEBASE:/quickstart/]
+RewriteRule . - [E=REWRITEBASE:/genealogy/]
 
 RewriteBase /
 

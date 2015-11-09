@@ -1,0 +1,5 @@
+- if (isset($person['person']) && $person['person'])
+  %em
+    != link_to("#" . $person['person']->getLinkName(), $person['person']->getLinkName())
+- else if ($person['name'])
+  %em= $person['name']

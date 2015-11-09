@@ -5,6 +5,7 @@
     "openclerk/routing": "dev-master",
     "openclerk/pages": "dev-master",
     "openclerk/config": "dev-master",
-    "soundasleep/php-helpers": "dev-master"
+    "soundasleep/php-helpers": "dev-master",
+    "mustangostang/spyc": "0.5.*"
   }
 }

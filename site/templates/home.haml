@@ -1,15 +1,61 @@
 .home
-  %h1 Quickstart
+  - foreach ($tree->getPeople() as $person)
+    %h1
+      %a{name: $person->getLinkName()}
+      %em= $person->getName()
 
-  %p
-    %a{:href => "https://github.com/soundasleep/quickstart"} Quickstart
-    is a barebones PHP application, set up with common web development
-    frameworks, which you can quickly clone or copy to jump straight into a new web project.
+    %dl
+      - if ($person->alsoKnownAs())
+        - foreach ($person->alsoKnownAs() as $name)
+          %dt Also known as
+          %dd
+            %em= $name
 
-  %h2 Features
+      - if ($person->born())
+        %dt Born
+        %dd
+          - if ($person->bornAt())
+            %em= $person->bornAt()
 
-  %ul
-    %li Coffeescript is compiled into Javascript
-    %li SCSS is compiled into CSS
-    %li HAML is compiled into HTML using templates
-    %li CSS images are spritified using spritify
+          - if ($person->bornIn())
+            in
+            %em= $person->bornIn()
+
+    %dl
+
+      - if ($person->mother())
+        %dt Mother
+        %dd
+          = require_template("_person", array('person' => $person->mother()))
+
+      - if ($person->father())
+        %dt Father
+        %dd
+          = require_template("_person", array('person' => $person->father()))
+
+      - if ($person->siblings())
+        - foreach ($person->siblings() as $sibling)
+          %dt Sibling
+          %dd
+            = require_template("_person", array('person' => $sibling))
+
+      - if ($person->children())
+        - foreach ($person->children() as $child)
+          %dt Child
+          %dd
+            = require_template("_person", array('person' => $child))
+
+    %dl
+
+      - foreach ($person->married() as $married)
+        %dt Married
+        %dd
+          = require_template("_person", array('person' => $married))
+
+          - if ($married['date'])
+            on
+            %em= $married['date']
+
+          - if ($married['place'])
+            in
+            %em= $married['place']

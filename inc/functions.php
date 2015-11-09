@@ -15,6 +15,8 @@ function page_footer($arguments = array()) {
 }
 
 function require_template($template_id, $arguments = array()) {
+  global $tree;
+  $arguments += array('tree' => $tree);
   \Pages\PageRenderer::requireTemplate($template_id, $arguments);
 }
 

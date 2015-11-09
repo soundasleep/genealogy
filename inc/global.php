@@ -20,3 +20,5 @@ Openclerk\Config::merge(array(
 \Pages\PageRenderer::addStylesheet(\Openclerk\Router::urlFor("css/default.css"));
 \Pages\PageRenderer::addJavascript("https://code.jquery.com/jquery-2.1.1.min.js");
 \Pages\PageRenderer::addJavascript(\Openclerk\Router::urlFor("js/default.js"));
+
+require(__DIR__ . "/tree.php");
