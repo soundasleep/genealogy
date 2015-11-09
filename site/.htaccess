@@ -1,0 +1,16 @@
+RewriteEngine on
+
+# This allows us to have .htaccess either hosted locally (through a subfolder)
+# or on production (through a root folder)
+RewriteCond %{HTTP_HOST} !localhost
+RewriteRule . - [E=REWRITEBASE:/]
+
+RewriteCond %{HTTP_HOST} localhost
+RewriteRule . - [E=REWRITEBASE:/quickstart/]
+
+RewriteBase /
+
+# Forbid access to any child PHP scripts
+RewriteRule ^([^\.]+)/([^\.]+).php$   -                   [F]
+
+RewriteRule ^([^\.]+)$                %{ENV:REWRITEBASE}router.php?path=$1  [L,QSA]

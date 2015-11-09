@@ -1,0 +1,31 @@
+{
+  "name": "genealogy",
+  "description": "A barebones PHP application set up for rapid prototyping.",
+  "version": "0.1.0",
+  "keywords": [],
+  "maintainers": [
+    {
+      "name": "Jevon Wright",
+      "email": "support@jevon.org",
+      "web": "https://jevon.org"
+    }
+  ],
+  "licenses": [
+    {
+      "name": "GNU General Public License v3",
+      "url": "https://www.gnu.org/copyleft/gpl.html"
+    }
+  ],
+  "homepage": "https://github.com/soundasleep/genealogy",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-coffee": "^0.12.0",
+    "grunt-contrib-sass": "^0.8.1",
+    "grunt-contrib-spritify": "^0.4.1",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-watch": "^0.6.1"
+  },
+  "dependencies": {}
+}

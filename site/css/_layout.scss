@@ -1,0 +1,59 @@
+html, body {
+  background: $body-background;
+  color: $body-color;
+}
+
+body {
+  margin: 0;
+  padding: 30px;
+  font-size: 16px;
+}
+
+.content {
+  margin: 20px auto;
+  max-width: 800px;
+
+  border-radius: 20px;
+  border: 1px solid darken($content-background, 1%);
+  background: $content-background;
+  padding: 30px;
+  color: $content-color;
+  line-height: 130%;
+
+  h1 {
+    margin-top: 0;
+    font-weight: 600;
+    line-height: 140%;
+  }
+}
+
+.copyright {
+  width: 50%;
+  margin: 30px auto 0 auto;
+  text-align: center;
+  font-size: 85%;
+  color: darken($content-color, 20%);
+
+  a {
+    font-weight: normal;
+  }
+
+  .terms {
+    margin-top: 10px;
+  }
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover {
+    color: $link-hover;
+    text-decoration: underline;
+  }
+}
+
+ul {
+  line-height: 170%;
+}

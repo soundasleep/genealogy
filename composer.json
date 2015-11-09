@@ -1,0 +1,10 @@
+{
+  "name": "soundasleep/genealogy",
+  "description": "A barebones PHP application set up for rapid prototyping.",
+  "require": {
+    "openclerk/routing": "dev-master",
+    "openclerk/pages": "dev-master",
+    "openclerk/config": "dev-master",
+    "soundasleep/php-helpers": "dev-master"
+  }
+}
