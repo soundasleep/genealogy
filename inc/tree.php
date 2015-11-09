@@ -133,11 +133,13 @@ class Person {
   function siblings() {
     $siblings = array();
 
-    foreach ($this->tree->getPeople() as $person) {
-      if ($person->father() == $this->father() && $person->mother() == $this->mother()) {
-        $siblings[] = array(
-          'person' => $person,
-        );
+    if ($this->father() && $this->mother()) {
+      foreach ($this->tree->getPeople() as $person) {
+        if ($person->father() == $this->father() && $person->mother() == $this->mother()) {
+          $siblings[] = array(
+            'person' => $person,
+          );
+        }
       }
     }
 
