@@ -103,7 +103,9 @@ class Person {
 
     if ($this->father() && $this->mother()) {
       foreach ($this->tree->getPeople() as $person) {
-        if ($person->father() == $this->father() && $person->mother() == $this->mother()) {
+        if ($person->father() == $this->father()
+              && $person->mother() == $this->mother()
+              && $person->person() != $this->person()) {
           $siblings[] = array(
             'person' => $person,
           );
@@ -118,7 +120,9 @@ class Person {
     $children = array();
 
     foreach ($this->tree->getPeople() as $person) {
-      if ($person->father() == $this->person() || $person->mother() == $this->person()) {
+      if (($person->father() == $this->person()
+          || $person->mother() == $this->person())
+          && $person->person() != $this->person()) {
         $children[] = array(
           'person' => $person,
         );
