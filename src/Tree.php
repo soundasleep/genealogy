@@ -5,16 +5,20 @@ namespace Genealogy;
 class Tree {
   var $people = array();
 
-  static function load($yaml) {
-    $tree = new Tree();
-    foreach ($yaml as $person => $info) {
-      $person = new Person($person, $info, $tree);
-      $tree->addPerson($person);
+  function load($yaml, $source_key) {
+    foreach ($yaml as $key => $info) {
+      $person = $this->getPerson($key);
+      if ($person) {
+        $person->merge($info, $source_key);
+      } else {
+        $person = new Person($key, $info, $this, $source_key);
+        $this->addPerson($person);
+      }
     }
 
-    $tree->resolveLinks();
+    $this->resolveLinks();
 
-    return $tree;
+    return $this;
   }
 
   function addPerson(Person $p) {
@@ -32,6 +36,10 @@ class Tree {
   }
 
   function getPerson($key) {
+    if (!is_string($key)) {
+      throw new \InvalidArgumentException("'$key' is not a string key.");
+    }
+
     return isset($this->people[strtolower($key)]) ? $this->people[strtolower($key)] : false;
   }
 }

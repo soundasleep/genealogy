@@ -3,24 +3,48 @@
 namespace Genealogy;
 
 class Person {
-  var $data;
+  var $data = array();
   var $key;
-  var $name;
 
-  function __construct($key, $yaml, $tree) {
-    $defaults = array(
-      'born' => array(),
-      'married' => array(),
-      'died' => array(),
-      'occupation' => array(),
-    );
-
-    $yaml = array_merge($defaults, $yaml);
+  function __construct($key, $yaml, $tree, $source_key) {
+    if (!$key) {
+      throw new \InvalidArgumentException("Invalid blank key '$key'");
+    }
 
     $this->key = $key;
-    $this->data = $yaml;
-    $this->name = $yaml['name'];
+    $this->data = $this->mergeRecursively(array(), $source_key, $yaml);
     $this->tree = $tree;
+  }
+
+  function mergeRecursively($result, $source_key, $array) {
+    if (!is_array($array)) {
+      throw new \InvalidArgumentException("'$array' is not an array");
+    }
+
+    foreach ($array as $key => $value) {
+      if (isset($result[$key])) {
+        if (is_array($result[$key])) {
+          $result[$key] = $this->mergeRecursively($result[$key], $source_key, $value);
+        } else {
+          $result[$key]->add($source_key, $value);
+        }
+      } else {
+        if (is_array($value)) {
+          $result[$key] = $this->mergeRecursively(array(), $source_key, $value);
+        } else {
+          $result[$key] = new Fact($source_key, $value);
+        }
+      }
+    }
+    return $result;
+  }
+
+  function merge($yaml, $source_key) {
+    $this->data = $this->mergeRecursively($this->data, $source_key, $yaml);
+  }
+
+  function _mergeRecursively($source_key, $array) {
+
   }
 
   function getKey() {
@@ -32,7 +56,7 @@ class Person {
   }
 
   function getName() {
-    return $this->name;
+    return $this->data['name'];
   }
 
   function alsoKnownAs() {
@@ -106,9 +130,11 @@ class Person {
         if ($person->father() == $this->father()
               && $person->mother() == $this->mother()
               && $person->person() != $this->person()) {
-          $siblings[] = array(
-            'person' => $person,
+          $sources = array(
+            $person->mother()->source(),
+            $person->father()->source(),
           );
+          $siblings[] = new Fact($sources, $person->person());
         }
       }
     }
@@ -134,13 +160,12 @@ class Person {
 
   function personKey($key) {
     if (isset($this->data[$key])) {
-      $person = $this->tree->getPerson($this->data[$key]);
+      $source = $this->data[$key]->source();
+      $person = $this->tree->getPerson($this->data[$key]->value());
       if ($person) {
-        return $person->person();
+        return new Fact($source, $person->person());
       } else {
-        return array(
-          'name' => $this->data[$key],
-        );
+        return new Fact($source, array('name' => $this->data[$key]));
       }
     } else {
       return false;
@@ -155,10 +180,10 @@ class Person {
 
   function getLinkName() {
     $s = array(
-      $this->getName(),
+      $this->getName()->value(),
     );
     if ($this->bornAt()) {
-      $s[] = "(" . date("Y", strtotime($this->bornAt())) . ")";
+      $s[] = "(" . date("Y", strtotime($this->bornAt()->value())) . ")";
     }
     return implode(" ", $s);
   }

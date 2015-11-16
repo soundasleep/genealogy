@@ -55,6 +55,7 @@ module.exports = (grunt) ->
     'spritify'
   ]
 
+  grunt.registerTask 's', 'serve'
   grunt.registerTask 'serve', [
     'default',
     'watch'

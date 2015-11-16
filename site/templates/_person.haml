@@ -1,5 +1,12 @@
-- if (isset($person['person']) && $person['person'])
+:php
+  if (!is_object($person)) {
+    throw new \InvalidArgumentException("'$person' is not a Fact");
+  }
+  $fact = $person->value();
+  $source = $person->source();
+
+- if (isset($fact['person']) && $fact['person'])
   %em
-    != link_to("#" . $person['person']->getLinkName(), $person['person']->getLinkName())
-- else if ($person['name'])
-  %em= $person['name']
+    != source($source, link_to("#" . $fact['person']->getLinkName(), $fact['person']->getLinkName()))
+- else if ($fact['name'])
+  %em= $fact['name']

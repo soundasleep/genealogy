@@ -2,24 +2,28 @@
   - foreach ($tree->getPeople() as $person)
     %h1
       %a{name: $person->getLinkName()}
-      %em= $person->getName()
+      %em
+        != fact($person->getName())
 
     %dl
       - if ($person->alsoKnownAs())
         - foreach ($person->alsoKnownAs() as $name)
           %dt Also known as
           %dd
-            %em= $name
+            %em
+              != fact($name)
 
       - if ($person->born())
         %dt Born
         %dd
           - if ($person->bornAt())
-            %em= $person->bornAt()
+            %em
+              != fact($person->bornAt())
 
           - if ($person->bornIn())
             in
-            %em= $person->bornIn()
+            %em
+              != fact($person->bornIn())
 
     %dl
 
