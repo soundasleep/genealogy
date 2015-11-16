@@ -43,10 +43,6 @@ class Person {
     $this->data = $this->mergeRecursively($this->data, $source_key, $yaml);
   }
 
-  function _mergeRecursively($source_key, $array) {
-
-  }
-
   function getKey() {
     return $this->key;
   }
@@ -100,11 +96,12 @@ class Person {
       'place' => false,
     );
 
-    $data = $this->data['married'];
+    $data = isset($this->data['married']) ? $this->data['married'] : array();
     foreach ($data as $key => $values) {
       $data[$key] = array_merge($defaults, $data[$key]);
       if (isset($data[$key]['person'])) {
-        $person = $this->tree->getPerson($data[$key]['person']);
+        $person = $this->tree->getPerson($data[$key]['person']->value());
+        // TODO add Fact wrapper here
         $data[$key]['person'] = $person;
         if ($person) {
           $data[$key]['name'] = $data[$key]['person']->getName();

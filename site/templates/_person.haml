@@ -8,5 +8,9 @@
 - if (isset($fact['person']) && $fact['person'])
   %em
     != source($source, link_to("#" . $fact['person']->getLinkName(), $fact['person']->getLinkName()))
-- else if ($fact['name'])
-  %em= $fact['name']
+- else if (isset($fact['name']) && $fact['name'])
+  %em
+    != source($source, $fact['name']);
+- else
+  :php
+    throw new InvalidArgumentException("I can't render a blank person '$person'");
