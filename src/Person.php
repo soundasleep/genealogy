@@ -272,12 +272,24 @@ class Person {
 
   function getLinkName() {
     $s = array(
-      $this->getName()->value(),
+      $this->shortName($this->getName()->value()),
     );
     if ($this->bornAt()) {
       $s[] = "(" . date("Y", strtotime($this->bornAt()->value())) . ")";
     }
     return implode(" ", $s);
+  }
+
+  function shortName($s) {
+    $bits = explode(" ", $s);
+    $result = array();
+    if (count($bits) > 0) {
+      $result[] = $bits[0];
+    }
+    if (count($bits) > 1) {
+      $result[] = $bits[count($bits) - 1];
+    }
+    return implode(" ", $result);
   }
 
   function isKeyPerson() {
