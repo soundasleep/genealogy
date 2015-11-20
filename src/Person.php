@@ -100,15 +100,24 @@ class Person {
     foreach ($data as $key => $values) {
       $data[$key] = array_merge($defaults, $data[$key]);
       if (isset($data[$key]['person'])) {
+        $source = $data[$key]['person']->source();
         $person = $this->tree->getPerson($data[$key]['person']->value());
-        // TODO add Fact wrapper here
-        $data[$key]['person'] = $person;
-        if ($person) {
-          $data[$key]['name'] = $data[$key]['person']->getName();
-        }
+        $result = array(
+          'name' => $data[$key]['name'],
+          'person' => $person,
+        );
+        $data[$key]['person'] = new Fact($source, $result);
       }
     }
     return $data;
+  }
+
+  function occupations() {
+    $occupations = isset($this->data['occupation']) ? $this->data['occupation'] : array();
+    if (!is_array($occupations)) {
+      $occupations = array($occupations);
+    }
+    return $occupations;
   }
 
   function mother() {
@@ -146,9 +155,14 @@ class Person {
       if (($person->father() == $this->person()
           || $person->mother() == $this->person())
           && $person->person() != $this->person()) {
-        $children[] = array(
-          'person' => $person,
-        );
+        $sources = array();
+        if ($person->father() == $this->person()) {
+          $sources[] = $person->father()->source();
+        }
+        if ($person->mother() == $this->person()) {
+          $sources[] = $person->mother()->source();
+        }
+        $children[] = new Fact($sources, $person->person());
       }
     }
 
@@ -162,7 +176,7 @@ class Person {
       if ($person) {
         return new Fact($source, $person->person());
       } else {
-        return new Fact($source, array('name' => $this->data[$key]));
+        return new Fact($source, array('name' => $this->data[$key]->value()));
       }
     } else {
       return false;

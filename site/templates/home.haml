@@ -54,12 +54,22 @@
       - foreach ($person->married() as $married)
         %dt Married
         %dd
-          = require_template("_person", array('person' => $married))
+          = require_template("_person", array('person' => $married['person']))
 
           - if ($married['date'])
             on
-            %em= $married['date']
+            %em
+              != fact($married['date'])
 
           - if ($married['place'])
             in
-            %em= $married['place']
+            %em
+              != fact($married['place'])
+
+    %dl
+      - if ($person->occupations())
+        - foreach ($person->occupations() as $occupation)
+          %dt Occupation
+          %dd
+            %em
+              != fact($occupation)
