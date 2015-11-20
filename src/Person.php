@@ -152,14 +152,14 @@ class Person {
     $children = array();
 
     foreach ($this->tree->getPeople() as $person) {
-      if (($person->father() == $this->person()
-          || $person->mother() == $this->person())
+      if ((($person->father() && $person->father()->value() == $this->person())
+          || ($person->mother() && $person->mother()->value() == $this->person()))
           && $person->person() != $this->person()) {
         $sources = array();
-        if ($person->father() == $this->person()) {
+        if ($person->father()->value() == $this->person()) {
           $sources[] = $person->father()->source();
         }
-        if ($person->mother() == $this->person()) {
+        if ($person->mother()->value() == $this->person()) {
           $sources[] = $person->mother()->source();
         }
         $children[] = new Fact($sources, $person->person());
@@ -167,6 +167,60 @@ class Person {
     }
 
     return $children;
+  }
+
+  // partners through having children
+  function partners() {
+    $partners = array();
+
+    foreach ($this->tree->getPeople() as $person) {
+      if ($person->person() == $this->person()) {
+        continue;
+      }
+
+      $children = $person->children();
+
+      $source = false;
+      $has_a_shared_child = false;
+
+      foreach ($children as $child1) {
+        foreach ($this->children() as $child2) {
+          if ($child1->value() == $child2->value()) {
+            $sources = array($child1->source(), $child2->source());
+            $has_a_shared_child = true;
+          }
+        }
+      }
+
+      if ($has_a_shared_child) {
+        // do not include partnerships which have already had
+        // a declared marriage
+        $already_in_marriage = false;
+        foreach ($this->married() as $marriage) {
+          $value = $marriage['person']->value();
+          if ($value['name'] == $person->getKey()) {
+            $already_in_marriage = true;
+          }
+        }
+
+        if (!$already_in_marriage) {
+          $partners[] = new Fact($sources, $person->person());
+        }
+      }
+    }
+
+    // strip out partnerships which already have been declared
+    // as a marriage
+    foreach ($partners as $key => $partner) {
+      foreach ($this->married() as $married) {
+        $value = $married['person']->value();
+        if ($value['person'] == $partner->value()['person']) {
+          unset($partners[$key]);
+        }
+      }
+    }
+
+    return $partners;
   }
 
   function personKey($key) {
@@ -197,5 +251,9 @@ class Person {
       $s[] = "(" . date("Y", strtotime($this->bornAt()->value())) . ")";
     }
     return implode(" ", $s);
+  }
+
+  function isKeyPerson() {
+    return isset($this->data['key']);
   }
 }

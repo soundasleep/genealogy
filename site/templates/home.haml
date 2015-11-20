@@ -66,6 +66,11 @@
             %em
               != fact($married['place'])
 
+      - foreach ($person->partners() as $partner)
+        %dt Partner
+        %dd
+          = require_template("_person", array('person' => $partner))
+
     %dl
       - if ($person->occupations())
         - foreach ($person->occupations() as $occupation)
