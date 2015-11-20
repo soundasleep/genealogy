@@ -1,0 +1,13 @@
+.fact {
+  &.family {
+    color: black;
+  }
+
+  &.documented {
+    color: green;
+  }
+
+  &.internet {
+    color: magenta;
+  }
+}

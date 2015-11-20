@@ -16,5 +16,5 @@ function fact($fact) {
 }
 
 function source($source, $value) {
-  return "<span class=\"" . htmlspecialchars($source) . "\" title=\"Source: " . htmlspecialchars($source) . "\">" . $value . "</span>";
+  return "<span class=\"fact " . htmlspecialchars($source) . "\" title=\"Source: " . htmlspecialchars($source) . "\">" . $value . "</span>";
 }

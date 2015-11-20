@@ -1,6 +1,7 @@
 vendor/
 node_modules/
 site/css/*.css
+site/css/*.css.map
 site/js/*.js
 site/images/sprites.png
 .sass-cache/
