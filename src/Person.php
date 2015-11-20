@@ -89,7 +89,8 @@ class Person {
     }
   }
 
-  function married() {
+  // explicitly specified in data
+  function directlyMarried() {
     $defaults = array(
       'name' => false,
       'date' => false,
@@ -110,6 +111,32 @@ class Person {
       }
     }
     return $data;
+  }
+
+  // explicitly specified + also inferred from reverse relationship
+  function married() {
+    $results = $this->directlyMarried();
+
+    foreach ($this->tree->getPeople() as $person) {
+      if ($person == $this) {
+        continue;
+      }
+
+      foreach ($person->directlyMarried() as $key => $married) {
+        $value = $married['person']->value();
+        if ($value['person']->person() == $this->person()) {
+          $source = $married['person']->source();
+
+          $value = $married;
+          $result['person'] = $person;
+          $result['name'] = $this->getKey();
+          $value['person'] = new Fact($source, $result);
+          $results[] = $value;
+        }
+      }
+    }
+
+    return $results;
   }
 
   function occupations() {
