@@ -1,0 +1,44 @@
+.tree {
+  .rendered {
+    position: absolute;
+    top: 30px;
+    left: 50px;
+    display: block;
+
+    .node, .line, .double-line {
+      background: red;
+      padding: 2px;
+      display: inline-block;
+      position: absolute;
+      text-align: center;
+    }
+
+    .node {
+      //margin: -10px;
+      background: white;
+      border: 1px solid #ccc;
+      margin: -10px -30px;
+      padding: 10px 30px;
+
+      &.red {
+        background: red;
+      }
+    }
+
+    .line {
+      background: #333;
+      border: 0;
+      padding: 1px;
+    }
+
+    .double-line {
+      background: white;
+      padding: 2px;
+      border: 2px solid #333;
+    }
+  }
+
+  .clear {
+    clear: both;
+  }
+}
