@@ -98,6 +98,11 @@ class Person {
     );
 
     $data = isset($this->data['married']) ? $this->data['married'] : array();
+    if ($data instanceof Fact) {
+      $data = array(array(
+        'person' => $data,
+      ));
+    }
     foreach ($data as $key => $values) {
       $data[$key] = array_merge($defaults, $data[$key]);
       if (isset($data[$key]['person'])) {
@@ -108,6 +113,8 @@ class Person {
           'person' => $person,
         );
         $data[$key]['person'] = new Fact($source, $result);
+      } else {
+        throw new \Exception("No person defined in: " . print_r($data[$key], true));
       }
     }
     return $data;
@@ -153,6 +160,17 @@ class Person {
 
   function father() {
     return $this->personKey("father");
+  }
+
+  function parents() {
+    $result = array();
+    if ($this->mother()) {
+      $result[] = $this->mother();
+    }
+    if ($this->father()) {
+      $result[] = $this->father();
+    }
+    return $result;
   }
 
   function siblings() {
@@ -294,5 +312,9 @@ class Person {
 
   function isKeyPerson() {
     return isset($this->data['key']);
+  }
+
+  function __toString() {
+    return "Person[" . $this->getLinkName() . "]";
   }
 }

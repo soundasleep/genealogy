@@ -31,6 +31,14 @@ class Fact {
   }
 
   function __toString() {
-    return get_class($this) . "[" . $this->value() . "]";
+    $value = $this->value();
+    if (is_array($value)) {
+      $s = array();
+      foreach ($value as $key => $v) {
+        $s[] = "$key = $v";
+      }
+      $value = "(" . implode(",", $s) . ")";
+    }
+    return get_class($this) . "[$value]";
   }
 }

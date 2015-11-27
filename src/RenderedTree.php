@@ -19,6 +19,7 @@ class RenderedTree {
   var $y_scale = 50;
 
   function __construct() {
+    /*
     // generate a test tree
     $this->nodes[] = array('x' => 3, 'y' => 0, 'text' => 'A', 'class' => 'red');
     $this->nodes[] = array('x' => 5, 'y' => 0, 'text' => 'B');
@@ -50,6 +51,7 @@ class RenderedTree {
 
     $this->double_lines[] = array('start x' => 3, 'end x' => 5, 'y' => 0);
     $this->double_lines[] = array('start x' => 0, 'end x' => 2, 'y' => 2);
+    */
   }
 
   function render() {
@@ -77,6 +79,15 @@ class RenderedTree {
     $width = $this->x_scale * $calculated_width;
     $height = $this->y_scale * $calculated_height;
 
+    if ($width < 0) {
+      $left += $width;
+      $width = -$width;
+    }
+    if ($height < 0) {
+      $top += $height;
+      $height = -$height;
+    }
+
     return htmlspecialchars("top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px;");
   }
 
@@ -85,10 +96,14 @@ class RenderedTree {
       $line += array(
         'data' => false,
         'class' => "",
+        'title' => "",
       );
 
       $style = htmlspecialchars($this->lineStyle($line));
-      $output[] = "<div class=\"line " . htmlspecialchars($line['class']) . "\" style=\"$style\"></div>";
+      $output[] = "<div class=\"line "
+        . htmlspecialchars($line['class'])
+        . "\" title=\"" . htmlspecialchars($line['title'])
+        . "\" style=\"$style\"></div>";
     }
 
     return $output;
@@ -99,10 +114,14 @@ class RenderedTree {
       $line += array(
         'data' => false,
         'class' => "",
+        'title' => "",
       );
 
       $style = htmlspecialchars($this->lineStyle($line));
-      $output[] = "<div class=\"double-line " . htmlspecialchars($line['class']) . "\" style=\"$style\"></div>";
+      $output[] = "<div class=\"double-line "
+        . htmlspecialchars($line['class'])
+        . "\" title=\"" . htmlspecialchars($line['title'])
+        . "\" style=\"$style\"></div>";
     }
 
     return $output;
@@ -113,6 +132,7 @@ class RenderedTree {
       $node += array(
         'data' => false,
         'class' => "",
+        'person' => false,
       );
 
       $left = ($node['x'] * $this->x_scale);
@@ -120,6 +140,15 @@ class RenderedTree {
       $width = $this->x_scale;
       $height = $this->y_scale;
       $style = htmlspecialchars("top: ${top}px; left: ${left}px; width: ${width}px; height: ${height}px;");
+
+      if ($node['person']) {
+        $node['text'] =
+          "<span class=\"person\">" .
+          "<a href=\"home#" . htmlspecialchars($node['person']->getLinkName()) . "\">" .
+          $node['person']->getLinkName() .
+          "</a>" .
+          "</span>";
+      }
 
       $output[] = "<div class=\"node " . htmlspecialchars($node['class']) . "\" style=\"$style\">" . $node['text'] . "</div>";
     }
