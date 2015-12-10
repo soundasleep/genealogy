@@ -148,12 +148,15 @@ class TreeToRenderedTree {
     foreach ($this->tree->getPeople() as $person) {
       if (in_array($person->getKey(), $nodes_to_display)) {
         foreach ($person->married() as $m) {
-          $spouse = $m["person"]->value()["person"]->getKey();
-          if (in_array($spouse, $nodes_to_display)) {
-            $connections[] = array(
-              $person->getKey(),
-              $m["person"]->value()["person"]->getKey(),
-            );
+          $value = $m["person"]->value();
+          if (is_array($value)) {
+            $spouse = $value["person"]->getKey();
+            if (in_array($spouse, $nodes_to_display)) {
+              $connections[] = array(
+                $person->getKey(),
+                $m["person"]->value()["person"]->getKey(),
+              );
+            }
           }
         }
       }
