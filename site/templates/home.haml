@@ -3,7 +3,10 @@
     %h1
       %a{name: $person->getLinkName()}
       %em
-        != fact($person->getName())
+        - if($person->hasName())
+          != fact($person->getName())
+        - else
+          = $person->getKey()
 
     %dl
       - if ($person->alsoKnownAs())

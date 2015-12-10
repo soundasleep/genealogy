@@ -3,7 +3,7 @@
 // load the yaml
 $tree = new Genealogy\Tree();
 
-$files = array('family', 'documented');
+$files = array('family', 'documented', 'internet');
 foreach ($files as $key) {
   $yml = Spyc::YAMLLoad(__DIR__ . "/../tree/$key.yml");
 

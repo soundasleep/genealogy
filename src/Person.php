@@ -52,7 +52,14 @@ class Person {
   }
 
   function getName() {
+    if (!$this->hasName()) {
+      throw new \Exception("Person '" . $this->key . "' does not have a 'name' fact");
+    }
     return $this->data['name'];
+  }
+
+  function hasName() {
+    return isset($this->data['name']);
   }
 
   function alsoKnownAs() {
@@ -82,39 +89,62 @@ class Person {
   }
 
   function bornIn() {
-    if (isset($this->data['born']) && isset($this->data['born']['place'])) {
-      return $this->data['born']['place'];
+    if (isset($this->data['born'])) {
+      if (is_array($this->data['born']) && isset($this->data['born']['place'])) {
+        return $this->data['born']['place'];
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
   }
 
   // explicitly specified in data
+  // removes marriages which do not have a person defined
   function directlyMarried() {
     $defaults = array(
-      'name' => false,
       'date' => false,
       'place' => false,
     );
 
     $data = isset($this->data['married']) ? $this->data['married'] : array();
+    if (is_array($data)) {
+      if (isset($data['person']) || isset($data['date'])) {
+        $data = array($data);
+      }
+    }
     if ($data instanceof Fact) {
       $data = array(array(
         'person' => $data,
       ));
     }
     foreach ($data as $key => $values) {
+      if (!is_array($data[$key])) {
+        throw new \Exception("data is not an array: " . print_r($data, true));
+      }
+
       $data[$key] = array_merge($defaults, $data[$key]);
       if (isset($data[$key]['person'])) {
         $source = $data[$key]['person']->source();
         $person = $this->tree->getPerson($data[$key]['person']->value());
-        $result = array(
-          'name' => $data[$key]['name'],
-          'person' => $person,
-        );
+        if (!$person && !isset($data[$key]['name'])) {
+          continue;
+        }
+        if (!($person instanceof Person)) {
+          throw new \Exception("Person '$person' is not a Person");
+        }
+
+        $result = array();
+        if (isset($data[$key]['name'])) {
+          $result['name'] = $data[$key]['name'];
+        }
+        if ($person) {
+          $result['person'] = $person;
+        }
         $data[$key]['person'] = new Fact($source, $result);
       } else {
-        throw new \Exception("No person defined in: " . print_r($data[$key], true));
+        unset($data[$key]);
       }
     }
     return $data;
@@ -131,14 +161,16 @@ class Person {
 
       foreach ($person->directlyMarried() as $key => $married) {
         $value = $married['person']->value();
-        if ($value['person']->person() == $this->person()) {
-          $source = $married['person']->source();
+        if (isset($value['person'])) {
+          if ($value['person']->person() == $this->person()) {
+            $source = $married['person']->source();
 
-          $value = $married;
-          $result['person'] = $person;
-          $result['name'] = $this->getKey();
-          $value['person'] = new Fact($source, $result);
-          $results[] = $value;
+            $value = $married;
+            $result['person'] = $person;
+            $result['name'] = $this->getKey();
+            $value['person'] = new Fact($source, $result);
+            $results[] = $value;
+          }
         }
       }
     }
@@ -243,7 +275,7 @@ class Person {
         $already_in_marriage = false;
         foreach ($this->married() as $marriage) {
           $value = $marriage['person']->value();
-          if ($value['name'] == $person->getKey()) {
+          if (isset($value['name']) && $value['name'] == $person->getKey()) {
             $already_in_marriage = true;
           }
         }
@@ -290,8 +322,13 @@ class Person {
 
   function getLinkName() {
     $s = array(
-      $this->shortName($this->getName()->value()),
     );
+    if ($this->hasName()) {
+      $name = $this->getName();
+      $s[] = $this->shortName($name->value());
+    } else {
+      $s[] = $this->key;
+    }
     if ($this->bornAt()) {
       $s[] = "(" . date("Y", strtotime($this->bornAt()->value())) . ")";
     }

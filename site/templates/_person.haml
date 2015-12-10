@@ -1,5 +1,5 @@
 :php
-  if (!is_object($person)) {
+  if (!($person instanceof \Genealogy\Fact)) {
     throw new \InvalidArgumentException("'$person' is not a Fact");
   }
   $fact = $person->value();
@@ -12,5 +12,5 @@
   %em
     != source($source, $fact['name']);
 - else
-  :php
-    throw new \InvalidArgumentException("I can't render a blank person '$person'");
+  %em
+    != source($source, $fact);
