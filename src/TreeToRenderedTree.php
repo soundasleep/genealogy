@@ -213,9 +213,9 @@ class TreeToRenderedTree {
       }
     }
 
-    // first put everyone at position zero
+    // first put everyone far, far far down
     foreach ($nodes_to_display as $node) {
-      $depths[$node] = 0;
+      $depths[$node] = 50;
     }
 
     // do this ten times so we hopefully settle out
@@ -229,7 +229,7 @@ class TreeToRenderedTree {
         }
       }
 
-      // put all people who are married on the highest depth
+      // put all people who are married on the same level
       foreach ($marriages as $m) {
         $min_depth = min($depths[$m[0]], $depths[$m[1]]);
         $depths[$m[0]] = $depths[$m[1]] = $min_depth;
@@ -242,7 +242,7 @@ class TreeToRenderedTree {
         $parents = $childs[1];
         $min_depth = 0;
         foreach ($parents as $p) {
-          $min_depth = min($min_depth, $depths[$p]);
+          $min_depth = max($min_depth, $depths[$p]);
         }
 
         $depths[$child] = $min_depth + 1;
